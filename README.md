@@ -4,6 +4,11 @@ The simplest node app I could make which demonstrates CRUD functions, logging, u
 
 The intended use of this is to be a reference / base for future node projects.
 
+## Important Notes
+
+I am currently working on the following features:
+- Google / Facebook integration
+
 ## Prerequisites
 
 You should have these items installed:

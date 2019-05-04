@@ -20,7 +20,7 @@ const bcrypt = require('bcrypt');
 var app = express();
 app.set('trust proxy', 1);
 app.use(session({
-    secret: 'keyboard cat',
+    secret: 'keyboard cat', // TODO pull secret into hidden file
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false } // TODO change to https only
@@ -214,7 +214,7 @@ app.post('/note', (req, res) => {
 
                 user.notes.filter(n => n.id == req.body.id)[0].title = req.body.title;
                 user.notes.filter(n => n.id == req.body.id)[0].content = req.body.content;
-                user.save().then(() => res.render('pages/index', {user: user, note: req.body.id}));
+                user.save().then(() => res.redirect(`/note/${req.body.id}`));
             } else {
                 console.log(`INFO: Adding new note`);
                 user.notes.push(new Note({title: 'Sample', content: 'This note was added!'}));

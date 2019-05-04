@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <%- include('../partials/head', {page: 'Home', css: 'index'}) %>
+</head>
+<header>
+</header>
+<body>
+    <div class="d-flex" id="wrapper">
+
+        <!-- Sidebar -->
+        <div class="bg-light border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading">NotesApp</div>
+            <div class="list-group list-group-flush">
+                <% for(var i=0; i < user.notes.length; i++) { %>
+                    <% if (user.notes[i].id == note) { %>
+                        <a href="#" class="list-group-item list-group-item-action bg-info"><%= user.notes[i].title%></a>
+                    <% } %>
+                    <% if (user.notes[i].id != note) { %>
+                          <a href="/note/<%= user.notes[i].id %>" class="list-group-item list-group-item-action bg-light"><%= user.notes[i].title%></a>
+                    <% } %>
+                <% } %>
+                <form action="/note" method="post">
+                    <input class="btn btn-info ml-1 mt-1" type="submit" value="New Note"/>
+                </form>
+            </div>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <i class="fas fa-bars fa-2x" id="menu-toggle"></i>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="/logout">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="container-fluid" contenteditable="true">
+                <form method="post" action="/note">
+                    <input type="hidden" name="id" value="<%= user.notes.filter(n => n.id == note)[0].id %>" />
+                    <input id="main-title" class="form-control mt-2" type="text" value="<%= user.notes.filter(n => n.id == note)[0].title %>" name="title" />
+                    <textarea class="form-control mt-2" id="main-text" name="content"><%= user.notes.filter(n => n.id == note)[0].content %></textarea>
+                    <input type="submit" class="btn btn-primary mt-2" id="save" disabled value="Save" />
+                    <% if (user.notes.length > 1) { %>
+                        <button type="button" class="btn btn-danger mt-2" onclick="return deleteNote('<%= user.notes.filter(n => n.id == note)[0].id %>');"><i class="fas fa-trash-alt"></i></button>
+                    <% } %>
+                </form>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+
+    $("#main-text").change(function(e) {
+        e.preventDefault();
+        $("#save").removeAttr("disabled");
+    });
+
+    $("#main-title").change(function(e) {
+        e.preventDefault();
+        $("#save").removeAttr("disabled");
+    });
+
+    deleteNote = (id) => {
+        $.ajax({
+            url: `/note/${id}`,
+            type: 'DELETE',
+            success: function(result) {
+                window.location.href = "/";
+                return false;
+            }
+    });
+    }
+    </script>
+</body>
+</html>

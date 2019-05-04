@@ -8,6 +8,9 @@ The intended use of this is to be a reference / base for future node projects.
 
 I am currently working on the following features:
 - Google / Facebook integration
+- Markdown Formatting
+- Email verification
+- General security enhancements (XSS, HTTPS, Helmet)
 
 ## Prerequisites
 

@@ -16,7 +16,7 @@ You should have these items installed:
 git pull https://github.com/ChristopherMcDonald/NoteNodeApp.git
 cd NodeNoteApp
 npm install
-mongod
+mongod # should be running on port 27017
 node server.js
 ```
 

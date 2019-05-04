@@ -10,7 +10,7 @@ You should have these items installed:
 - Node
 - MongoDB
 
-### Installing
+## Running locally
 
 ```
 git pull https://github.com/ChristopherMcDonald/NoteNodeApp.git

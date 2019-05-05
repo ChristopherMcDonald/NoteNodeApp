@@ -15,7 +15,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var https = require('https');
 var fs = require('fs');
-
+var helmet = require('helmet');
 // Password hashing stuff
 const bcrypt = require('bcrypt');
 
@@ -28,11 +28,12 @@ app.use(session({
     secret: config.dev.sessionSecret,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true }
+    cookie: { secure: true, httpOnly: true }
 }));
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+app.use(helmet());
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');

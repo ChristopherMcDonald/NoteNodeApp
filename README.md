@@ -10,7 +10,7 @@ I am currently working on the following features:
 - Google / Facebook integration
 - Markdown Formatting
 - Email verification
-- General security enhancements (XSS, Helmet)
+- General security enhancements (XSS)
 
 ## Prerequisites
 

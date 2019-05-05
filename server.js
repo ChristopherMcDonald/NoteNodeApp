@@ -13,17 +13,22 @@ var Note = Models.Note;
 var express = require('express');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var https = require('https');
+var fs = require('fs');
 
 // Password hashing stuff
 const bcrypt = require('bcrypt');
 
+// app specific settings
+const config = require('./config.json');
+
 var app = express();
 app.set('trust proxy', 1);
 app.use(session({
-    secret: 'keyboard cat', // TODO pull secret into hidden file
+    secret: config.dev.sessionSecret,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // TODO change to https only
+    cookie: { secure: true }
 }));
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -237,8 +242,12 @@ app.use((req, res, next) => {
     res.status(404).render('pages/error/404');
 });
 
-app.listen(8080);
-console.log(`App listening on port ${8080}`);
+https.createServer({
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.cert')
+}, app).listen(8080, () => {
+    console.log(`App listening on port ${8080}`);
+});
 
 // Helper functions
 function validateEmail(email) {

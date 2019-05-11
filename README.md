@@ -10,12 +10,12 @@ I am currently working on the following features:
 - Google / Facebook integration (signup and sharing)
 - Markdown Formatting
 - General security enhancements (XSS)
-- Email verification
 - Live Deployment
 
 ## Versions
 
 - *v1.0.0*: Base functionality, CRUD operations and decent security considerations
+- *v1.0.1*: Added email verification, required node update to v11.15.0 due to SendGrid
 
 ## Prerequisites
 
@@ -47,6 +47,7 @@ Coming soon!
 * [Bootstrap](https://getbootstrap.com) - CSS and JS library
 * [MongoDB](https://www.mongodb.com) - NoSQL database
 * [jQuery](https://jquery.com) - JS library
+* [SendGrid](https://sendgrid.com) - JS library to send emails, uses templates
 
 ## Authors
 

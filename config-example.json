@@ -1,8 +1,10 @@
 {
     "dev": {
-        "sessionSecret": "..."
+        "sessionSecret": "...",
+        "email": "SendGrid API Key"
     },
     "prod": {
-        "sessionSecret": "..."
+        "sessionSecret": "...",
+        "email": "SendGrid API Key"
     }
 }

@@ -16,11 +16,17 @@ var session = require('express-session');
 var https = require('https');
 var fs = require('fs');
 var helmet = require('helmet');
-// Password hashing stuff
+
+// Password and security hashing stuff
 const bcrypt = require('bcrypt');
+const uuidv1 = require('uuid/v1');
+
+// email
+const sgMail = require('@sendgrid/mail');
 
 // app specific settings
 const config = require('./config.json');
+sgMail.setApiKey(config.dev.email);
 
 var app = express();
 app.set('trust proxy', 1);
@@ -106,9 +112,14 @@ app.post('/login', (req, res) => {
                         res.render('pages/login', {error: "Login failed."});
                     } else {
                         // save cookie
-                        console.log(`INFO: Succesful login by ${email}`);
-                        req.session.email = email;
-                        res.redirect("/");
+
+                        if (!user.verified) {
+                            res.render('pages/login', {error: "Verify your email!"});
+                        } else {
+                            console.log(`INFO: Succesful login by ${email}`);
+                            req.session.email = email;
+                            res.redirect("/");
+                        }
                     }
                 });
             } else {
@@ -143,11 +154,25 @@ app.post('/signup', (req, res) => {
             var user = new User({
                 email: email,
                 password: hash,
+                guid: uuidv1(),
                 notes: [new Note({title: 'Sample', content: 'This is your first note!'})]
             });
 
             user.save().then(() => res.render('pages/login', {success: "Signed up successfully. Please login."}));
             console.log(`INFO: Succesful signup by ${email}`);
+
+            const msg = {
+                to: user.email,
+                from: 'chris@christophermcdonald.me',
+                subject: "Welcome to the NoteNodeApp!",
+                text: "NoteNodeApp-Text",
+                html: "<p>NoteNodeApp-HTML</p>",
+                templateId: 'd-18cdc73ec5564f0eb6d53f066300e5eb',
+                dynamic_template_data: {
+                    action: `https://${req.get('host')}/verify?user=${user.email}&guid=${user.guid}`
+                },
+            };
+            sgMail.send(msg);
         });
     }
 });
@@ -230,6 +255,31 @@ app.post('/note', (req, res) => {
     }
 });
 
+app.get('/verify', (req, res) => {
+    var email = req.query.user;
+    var guid = req.query.guid;
+
+    User.findOne({email: email}, (err, user) => {
+        if (err) {
+            throw err;
+        }
+
+        if (!user) {
+            res.render('pages/login', {error: "That link wasn't quite correct..."});
+        }
+
+        if (user.guid === guid) {
+            // this is an edit
+            console.log(`INFO: Verifying user ${user.email}`);
+
+            user.verified = true;
+            user.save().then(() => res.render('pages/login', {success: "Verified! Please log in."}));
+        } else {
+            res.render('pages/login', {error: "That link wasn't quite correct..."});
+        }
+    });
+});
+
 // 500 handler
 app.use((err, req, res, next) => {
     // TODO log context of what request
@@ -239,7 +289,6 @@ app.use((err, req, res, next) => {
 
 // 404 handler
 app.use((req, res, next) => {
-    // TODO why doesn't this actually return 404?
     res.status(404).render('pages/error/404');
 });
 

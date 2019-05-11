@@ -7,10 +7,15 @@ The intended use of this is to be a reference / base for future node projects.
 ## Important Notes
 
 I am currently working on the following features:
-- Google / Facebook integration
+- Google / Facebook integration (signup and sharing)
 - Markdown Formatting
-- Email verification
 - General security enhancements (XSS)
+- Email verification
+- Live Deployment
+
+## Versions
+
+- *v1.0.0*: Base functionality, CRUD operations and decent security considerations
 
 ## Prerequisites
 
@@ -27,6 +32,10 @@ npm install
 mongod # should be running on port 27017
 node server.js
 ```
+
+## Deployment
+
+Coming soon!
 
 ## Built With
 

@@ -20,7 +20,7 @@ I am currently working on the following features:
 ## Prerequisites
 
 You should have these items installed:
-- Node
+- Node (v11.15.0)
 - MongoDB
 
 ## Running locally

@@ -11,6 +11,7 @@ I am currently working on the following features:
 - Markdown Formatting
 - General security enhancements (XSS)
 - Live Deployment
+- JSON web tokens for multi-server support
 
 ## Versions
 
@@ -30,7 +31,7 @@ git pull https://github.com/ChristopherMcDonald/NoteNodeApp.git
 cd NodeNoteApp
 npm install
 mongod # should be running on port 27017
-node server.js
+node server.js dev
 ```
 
 ## Deployment

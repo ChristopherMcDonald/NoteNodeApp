@@ -1,8 +1,11 @@
 // server.js
 
+// import config
+const config = require('./config.json');
+
 // db connection
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true});
+mongoose.connect(config[process.argv[2]].mongo, {useNewUrlParser: true});
 
 // Import models
 var Models = require('./model/Models');
@@ -25,13 +28,12 @@ const uuidv1 = require('uuid/v1');
 const sgMail = require('@sendgrid/mail');
 
 // app specific settings
-const config = require('./config.json');
-sgMail.setApiKey(config.dev.email);
+sgMail.setApiKey(config[process.argv[2]].email);
 
 var app = express();
 app.set('trust proxy', 1);
 app.use(session({
-    secret: config.dev.sessionSecret,
+    secret: config[process.argv[2]].sessionSecret,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: true, httpOnly: true }

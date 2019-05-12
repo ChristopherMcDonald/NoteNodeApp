@@ -1,10 +1,12 @@
 {
     "dev": {
         "sessionSecret": "...",
-        "email": "SendGrid API Key"
+        "email": "SendGrid API Key",
+        "mongo": "mongodb://localhost:27017/test"
     },
     "prod": {
         "sessionSecret": "...",
-        "email": "SendGrid API Key"
+        "email": "SendGrid API Key",
+        "mongo": "mongodb://localhost:27017/test"
     }
 }

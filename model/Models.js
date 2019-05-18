@@ -10,6 +10,7 @@ var userSchema = new mongoose.Schema({
   email: {type: String, index: true, unique: true, lowercase: true, trim: true },
   password: {type: String, required: true},
   guid: {type: String, required: true},
+  tempGuid: {type: String},
   verified: {type: Boolean, required: true, default: false},
   notes: [noteSchema]
 });

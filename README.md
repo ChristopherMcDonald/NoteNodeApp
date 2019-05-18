@@ -12,6 +12,8 @@ I am currently working on the following features:
 - General security enhancements (XSS)
 - Live Deployment
 - JSON web tokens for multi-server support
+- Unit Tests
+- Data Access Layering
 
 ## Versions
 

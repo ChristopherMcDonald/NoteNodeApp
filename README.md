@@ -14,11 +14,13 @@ I am currently working on the following features:
 - JSON web tokens for multi-server support
 - Unit Tests
 - Data Access Layering
+- Resend verification email
 
 ## Versions
 
 - *v1.0.0*: Base functionality, CRUD operations and decent security considerations
 - *v1.0.1*: Added email verification, required node update to v11.15.0 due to SendGrid
+- *v1.0.2*: Added password reset functionality
 
 ## Prerequisites
 

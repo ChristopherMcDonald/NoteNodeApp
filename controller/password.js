@@ -9,7 +9,7 @@ module.exports = function(app, User, sgMail, bcrypt, uuidv1){
 
     app.post('/password', (req, res) => {
         var email = req.body.email;
-        User.findOne({email: email}, (err, user) => {
+        User.get(email, (err, user) => {
             if (err) {
                 throw err;
             }
@@ -43,7 +43,7 @@ module.exports = function(app, User, sgMail, bcrypt, uuidv1){
         var email = req.query.user;
         var guid = req.query.guid;
 
-        User.findOne({email: email}, (err, user) => {
+        User.get(email, (err, user) => {
             if (err) {
                 throw err;
             }
@@ -73,7 +73,7 @@ module.exports = function(app, User, sgMail, bcrypt, uuidv1){
         if(!validatePasswords(password, confpassword)) {
             res.render('pages/passwordReset', {error: "Ensure passwords are equal and it contains 1 number, and 1 uppercase and lowercase letter."});
         } else {
-            User.findOne({email: email}, (err, user) => {
+            User.get(email, (err, user) => {
                 if (err) {
                     throw err;
                 }

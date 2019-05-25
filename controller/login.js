@@ -20,7 +20,7 @@ module.exports = function(app, User, Note, bcrypt) {
         } else if(!validatePassword(password)) {
             res.render('pages/login', {error: "Ensure password contains 1 number, and 1 uppercase and lowercase letter."});
         } else {
-            User.findOne({email: email}, (err, user) => {
+            User.get(email, (err, user) => {
                 if (err) {
                     throw err;
                 }

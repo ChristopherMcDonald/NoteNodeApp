@@ -32,7 +32,7 @@ module.exports = function(app, User, Note, sgMail, bcrypt, uuidv1) {
                     email: email,
                     password: hash,
                     guid: uuidv1(),
-                    notes: [new Note({title: 'Sample', content: 'This is your first note!'})]
+                    notes: [Note.create('Sample', 'This is your first note!')]
                 });
 
                 user.save().then(() => res.render('pages/login', {success: "Signed up successfully. Please login."}));
@@ -58,7 +58,7 @@ module.exports = function(app, User, Note, sgMail, bcrypt, uuidv1) {
         var email = req.query.user;
         var guid = req.query.guid;
 
-        User.findOne({email: email}, (err, user) => {
+        User.get(email, (err, user) => {
             if (err) {
                 throw err;
             }

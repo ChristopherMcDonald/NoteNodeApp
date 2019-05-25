@@ -7,7 +7,7 @@ module.exports = function(app, User, Note) {
         }
         else
         {
-            User.findOne({email: email}, (err, user) => {
+            User.get(email, (err, user) => {
                 if (err) {
                     throw err;
                 }
@@ -29,7 +29,7 @@ module.exports = function(app, User, Note) {
         }
         else
         {
-            User.findOne({email: email}, (err, user) => {
+            User.get(email, (err, user) => {
                 if (err) {
                     throw err;
                 }
@@ -52,7 +52,7 @@ module.exports = function(app, User, Note) {
         }
         else
         {
-            User.findOne({email: email}, (err, user) => {
+            User.get(email, (err, user) => {
                 if (err) {
                     throw err;
                 }
@@ -67,12 +67,38 @@ module.exports = function(app, User, Note) {
 
                     user.notes.filter(n => n.id == req.body.id)[0].title = req.body.title;
                     user.notes.filter(n => n.id == req.body.id)[0].content = req.body.content;
+                    user.notes.filter(n => n.id == req.body.id)[0].updated = Date.now();
                     user.save().then(() => res.redirect(`/note/${req.body.id}`));
                 } else {
                     console.log(`INFO: Adding new note`);
-                    user.notes.push(new Note({title: 'Sample', content: 'This note was added!'}));
+                    user.notes.push(Note.create('Sample', 'This note was added!'));
                     user.save().then(() => res.redirect(`/note/${user.notes[user.notes.length - 1].id}`));
                 }
+            });
+        }
+    });
+
+    app.post('/note/:id/pin', (req, res) =>
+    {
+        var email = req.session.email;
+        if (email === undefined)
+        {
+            res.redirect('/');
+        }
+        else
+        {
+            User.get(email, (err, user) => {
+                if (err) {
+                    throw err;
+                }
+
+                if (!user) {
+                    res.redirect('/');
+                }
+
+                user.notes.filter(n => n.id == req.params.id)[0].pinned = !user.notes.filter(n => n.id == req.params.id)[0].pinned;
+
+                user.save().then(() => res.redirect(`/note/${req.params.id}`));
             });
         }
     });

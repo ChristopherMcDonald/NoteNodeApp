@@ -8,7 +8,7 @@ module.exports = (app, User) => {
         }
         else
         {
-            User.findOne({email: email}, (err, user) => {
+            User.get(email, (err, user) => {
                 if (err) {
                     throw err;
                 }

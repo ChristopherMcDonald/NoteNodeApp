@@ -30,10 +30,8 @@ module.exports = function(app, User, Note, bcrypt) {
                         if (err || !response) {
                             res.render('pages/login', {error: "Login failed."});
                         } else {
-                            // save cookie
-
                             if (!user.verified) {
-                                res.render('pages/login', {error: "Verify your email!"});
+                                res.render('pages/login', {error: `Verify your email! You can resend the verification email <a href=\"https://${req.get('host')}/resend?email=${user.email}\">here</a>.`});
                             } else {
                                 console.log(`INFO: Succesful login by ${email}`);
                                 req.session.email = email;

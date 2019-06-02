@@ -3,6 +3,8 @@ module.exports = function(app, User, sgMail, bcrypt, uuidv1){
     var PasswordHelper = require('../helper/password');
     var validatePasswords = PasswordHelper.validatePasswords;
 
+    var EmailHelper = require('../helper/email');
+
     app.get('/password', (req, res) => {
         res.render('pages/password');
     });
@@ -17,21 +19,10 @@ module.exports = function(app, User, sgMail, bcrypt, uuidv1){
             if (!user) {
                 res.render('pages/login', { success: "An email has been sent to that email to reset your password." });
             } else {
-                console.log(`INFO: Succesful password reset by ${email}, user: ${user}`);
+                console.log(`INFO: Succesful password reset by ${email}, user: ${user.email}`);
                 user.tempGuid = uuidv1();
 
-                const msg = {
-                    to: user.email,
-                    from: 'chris@christophermcdonald.me',
-                    subject: "Welcome to the NoteNodeApp!",
-                    text: "NoteNodeApp-Text",
-                    html: "<p>NoteNodeApp-HTML</p>",
-                    templateId: 'd-79a7bafada544522a9b5fa8b80f7a476',
-                    dynamic_template_data: {
-                        action: `https://${req.get('host')}/passwordReset?user=${user.email}&guid=${user.tempGuid}`
-                    },
-                };
-                sgMail.send(msg);
+                EmailHelper.sendPasswordResetEmail(sgMail, user, req.get('host'));
 
                 // return the same message as if user was not found, important for security
                 user.save().then(() => res.render('pages/login', {success: "An email has been sent to that email to reset your password."}));

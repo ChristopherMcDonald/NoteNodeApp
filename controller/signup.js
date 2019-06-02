@@ -5,9 +5,29 @@ module.exports = function(app, User, Note, sgMail, bcrypt, uuidv1) {
     var validateEmail = PasswordHelper.validateEmail;
     var validatePassword = PasswordHelper.validatePassword;
 
+    var EmailHelper = require('../helper/email');
+
     // signup page
     app.get('/signup', (req, res) => {
         res.render('pages/signup');
+    });
+
+    // signup page
+    app.get('/resend', (req, res) => {
+        var email = req.query.email;
+
+        User.get(email, (err, user) => {
+            if (err) {
+                throw err;
+            }
+
+            if (!user) {
+                res.render('pages/login', {error: "That link wasn't quite correct..."});
+            }
+
+            EmailHelper.sendSignupEmail(sgMail, user, req.get('host'));
+            res.render('pages/login', {success: "The verification email has been resent."});
+        });
     });
 
     // signup request
@@ -37,19 +57,7 @@ module.exports = function(app, User, Note, sgMail, bcrypt, uuidv1) {
 
                 user.save().then(() => res.render('pages/login', {success: "Signed up successfully. Please login."}));
                 console.log(`INFO: Succesful signup by ${email}`);
-
-                const msg = {
-                    to: user.email,
-                    from: 'chris@christophermcdonald.me',
-                    subject: "Welcome to the NoteNodeApp!",
-                    text: "NoteNodeApp-Text",
-                    html: "<p>NoteNodeApp-HTML</p>",
-                    templateId: 'd-18cdc73ec5564f0eb6d53f066300e5eb',
-                    dynamic_template_data: {
-                        action: `https://${req.get('host')}/verify?user=${user.email}&guid=${user.guid}`
-                    },
-                };
-                sgMail.send(msg);
+                EmailHelper.sendSignupEmail(sgMail, user, req.get('host'));
             });
         }
     });

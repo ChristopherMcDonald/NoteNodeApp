@@ -9,7 +9,6 @@ The intended use of this is to be a reference / base for future node projects.
 I am currently working on the following features:
 - Google / Facebook integration (signup and sharing)
 - Markdown Formatting
-- General security enhancements (XSS)
 - Live Deployment
 - JSON web tokens for multi-server support
 - Unit Tests

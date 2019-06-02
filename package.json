@@ -14,7 +14,8 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "test": "snyk test"
+    "test": "snyk test",
+    "start": "node server prod"
   },
   "devDependencies": {
     "snyk": "^1.161.1"

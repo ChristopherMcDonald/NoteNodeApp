@@ -3,6 +3,10 @@
 // import config
 const config = require('./config.json');
 
+if (!process.argv[2]) {
+    process.argv[2] = 'prod';
+}
+
 // db connection
 const mongoose = require('mongoose');
 mongoose.connect(config[process.argv[2]].mongo, {useNewUrlParser: true});
@@ -63,6 +67,6 @@ require('./controller/error')(app);
 https.createServer({
   key: fs.readFileSync('server.key'),
   cert: fs.readFileSync('server.cert')
-}, app).listen(8080, () => {
+}, app).listen(config[process.argv[2]].port, () => {
     console.log(`App listening on port ${8080}`);
 });

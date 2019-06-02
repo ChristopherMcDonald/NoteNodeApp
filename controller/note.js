@@ -1,4 +1,6 @@
 module.exports = function(app, User, Note) {
+    const regexScript = /<script.{0,}<\/script>/gs;
+
     app.get('/note/:id', (req, res) => {
         var email = req.session.email;
         if (email === undefined)
@@ -65,8 +67,11 @@ module.exports = function(app, User, Note) {
                     // this is an edit
                     console.log(`INFO: Editing note ${req.body.id}`);
 
+                    // removes any script tags
+                    var str = req.body.content.replace(regexScript, '');
+
                     user.notes.filter(n => n.id == req.body.id)[0].title = req.body.title;
-                    user.notes.filter(n => n.id == req.body.id)[0].content = req.body.content;
+                    user.notes.filter(n => n.id == req.body.id)[0].content = str;
                     user.notes.filter(n => n.id == req.body.id)[0].updated = Date.now();
                     user.save().then(() => res.redirect(`/note/${req.body.id}`));
                 } else {

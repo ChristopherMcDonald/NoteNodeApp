@@ -1,5 +1,8 @@
 var mongoose = require('mongoose');
 
+// security
+const uuidv1 = require('uuid/v1');
+
 var noteSchema = new mongoose.Schema({
   title: { type: String, required: true },
   content: { type: String, required: true },
@@ -15,6 +18,18 @@ var userSchema = new mongoose.Schema({
   verified: { type: Boolean, required: true, default: false },
   notes: [noteSchema]
 });
+
+userSchema.statics.create = (email, hash, func) => {
+    var UserModel = mongoose.model('User', userSchema);
+    var NoteModel = mongoose.model('Note', noteSchema);
+    var user = new UserModel({
+        email: email,
+        password: hash,
+        guid: uuidv1(),
+        notes: [NoteModel.create('Sample', 'This is your first note!')]
+    });
+    user.save().then(() => { func(user); });
+};
 
 userSchema.statics.get = (email, func) => {
     var UserModel = mongoose.model('User', userSchema);

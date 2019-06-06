@@ -17,7 +17,8 @@ module.exports = function(app, User, sgMail, bcrypt, uuidv1){
             }
 
             if (!user) {
-                res.render('pages/login', { success: "An email has been sent to that email to reset your password." });
+                // render
+                res.render('pages/login', { success: "If this user exists, an email has been set to the email provided." });
             } else {
                 console.log(`INFO: Succesful password reset by ${email}, user: ${user.email}`);
                 user.tempGuid = uuidv1();
@@ -25,7 +26,7 @@ module.exports = function(app, User, sgMail, bcrypt, uuidv1){
                 EmailHelper.sendPasswordResetEmail(sgMail, user, req.get('host'));
 
                 // return the same message as if user was not found, important for security
-                user.save().then(() => res.render('pages/login', {success: "An email has been sent to that email to reset your password."}));
+                user.save().then(() => res.render('pages/login', {success: "If this user exists, an email has been set to the email provided."}));
             }
         });
     });
@@ -39,12 +40,13 @@ module.exports = function(app, User, sgMail, bcrypt, uuidv1){
                 throw err;
             }
 
+            // mask all errors as 400 for security purposes
             if (!user) {
-                res.redirect('/');
+                return res.redirect('/');
             }
 
             if (user.tempGuid != guid) {
-                res.redirect('/');
+                return res.redirect('/');
             }
 
             // do not render email in HTML for security, set temp
@@ -57,6 +59,8 @@ module.exports = function(app, User, sgMail, bcrypt, uuidv1){
 
     app.post('/passwordReset', (req, res) =>
     {
+        // session.tempEmail must be set for this browser making request
+        // and therefore successful password reset must've been called
         var email = req.session.tempEmail;
         var password = req.body.password;
         var confpassword = req.body.confpassword;

@@ -3,13 +3,19 @@
 // import config
 const config = require('./config.json');
 
-if (!process.argv[2]) {
-    process.argv[2] = 'prod';
-}
-
 // db connection
 const mongoose = require('mongoose');
-mongoose.connect(config[process.argv[2]].mongo, {useNewUrlParser: true});
+var mongod;
+if (config[process.argv[2]] && config[process.argv[2]].mongo) {
+    mongoose.connect(config[process.argv[2]].mongo, {useNewUrlParser: true});
+} else {
+    var MongoMemoryServer = require('mongodb-memory-server');
+    mongod = new MongoMemoryServer.MongoMemoryServer();
+    mongod.getConnectionString().then(uri =>
+        {
+            mongoose.connect(uri, {useNewUrlParser: true});
+        });
+}
 
 // Import models
 var Models = require('./model/Models');
@@ -29,13 +35,17 @@ const bcrypt = require('bcrypt');
 const uuidv1 = require('uuid/v1');
 
 // email
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(config[process.argv[2]].email);
+var sgMail = require('@sendgrid/mail');
+if (config[process.argv[2]] && config[process.argv[2]].email) {
+    sgMail.setApiKey(config[process.argv[2]].email);
+} else {
+    sgMail = new (require('./tests/MockMailClient'))();
+}
 
 var app = express();
 app.set('trust proxy', 1);
 app.use(session({
-    secret: config[process.argv[2]].sessionSecret,
+    secret: (config[process.argv[2]] && config[process.argv[2]].sessionSecret) ? config[process.argv[2]].sessionSecret : "secret",
     resave: false,
     saveUninitialized: true,
     cookie: { secure: true, httpOnly: true }
@@ -57,16 +67,20 @@ require('./controller/middleware')(app);
 // regular routes
 require('./controller/home')(app, User);
 require('./controller/password')(app, User, sgMail, bcrypt, uuidv1);
-require('./controller/login')(app, User, Note, bcrypt);
-require('./controller/signup')(app, User, Note, sgMail, bcrypt, uuidv1);
+require('./controller/login')(app, User, bcrypt);
+require('./controller/signup')(app, User, Note, sgMail, bcrypt);
 require('./controller/note')(app, User, Note);
 
 // error catching routes
 require('./controller/error')(app);
 
-https.createServer({
+var server = https.createServer({
   key: fs.readFileSync('server.key'),
   cert: fs.readFileSync('server.cert')
-}, app).listen(config[process.argv[2]].port, () => {
+}, app).listen( (config[process.argv[2]] && config[process.argv[2]].port) ? config[process.argv[2]].port : 8080, () => {
     console.log(`App listening on port ${8080}`);
 });
+
+server.MockMailClient = sgMail;
+server.MongoMemoryServer = mongod;
+module.exports = server;

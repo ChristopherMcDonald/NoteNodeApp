@@ -1,4 +1,4 @@
-module.exports = function(app, User, Note, sgMail, bcrypt, uuidv1) {
+module.exports = function(app, User, Note, sgMail, bcrypt) {
 
     var PasswordHelper = require('../helper/password');
     var validatePasswords = PasswordHelper.validatePasswords;
@@ -37,9 +37,9 @@ module.exports = function(app, User, Note, sgMail, bcrypt, uuidv1) {
         var confpassword = req.body.confpassword;
 
         if (!validateEmail(email)) {
-            res.render('pages/signup', {error: "Email is not in correct format, check again or choose another."});
+            res.status(422).render('pages/signup', {error: "Email is not in correct format, check again or choose another."});
         } else if(!validatePasswords(password, confpassword)) {
-            res.render('pages/signup', {error: "Ensure passwords are equal and it contains 1 number, and 1 uppercase and lowercase letter."});
+            res.status(422).render('pages/signup', {error: "Ensure passwords are equal and it contains 1 number, and 1 uppercase and lowercase letter."});
         } else {
             // save user
             // TODO check for user already in DB
@@ -48,16 +48,11 @@ module.exports = function(app, User, Note, sgMail, bcrypt, uuidv1) {
                     throw err;
                 }
 
-                var user = new User({
-                    email: email,
-                    password: hash,
-                    guid: uuidv1(),
-                    notes: [Note.create('Sample', 'This is your first note!')]
+                User.create(email, hash, (user) => {
+                    EmailHelper.sendSignupEmail(sgMail, user, req.get('host'));
+                    res.render('pages/login', {success: "Signed up successfully. Please login."});
+                    console.log(`INFO: Succesful signup by ${email}`);
                 });
-
-                user.save().then(() => res.render('pages/login', {success: "Signed up successfully. Please login."}));
-                console.log(`INFO: Succesful signup by ${email}`);
-                EmailHelper.sendSignupEmail(sgMail, user, req.get('host'));
             });
         }
     });
@@ -82,7 +77,7 @@ module.exports = function(app, User, Note, sgMail, bcrypt, uuidv1) {
                 user.verified = true;
                 user.save().then(() => res.render('pages/login', {success: "Verified! Please log in."}));
             } else {
-                res.render('pages/login', {error: "That link wasn't quite correct..."});
+                res.status(400).render('pages/login', {error: "That link wasn't quite correct..."});
             }
         });
     });

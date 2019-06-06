@@ -1,4 +1,4 @@
-module.exports = function(app, User, Note, bcrypt) {
+module.exports = function(app, User, bcrypt) {
 
     var PasswordHelper = require('../helper/password');
     var validatePasswords = PasswordHelper.validatePasswords;
@@ -16,9 +16,9 @@ module.exports = function(app, User, Note, bcrypt) {
         var password = req.body.password;
 
         if (!validateEmail(email)) {
-            res.render('pages/login', {error: "Email is not in correct format, check again or choose another."});
+            res.status(422).render('pages/login', {error: "Email is not in correct format, check again or choose another."});
         } else if(!validatePassword(password)) {
-            res.render('pages/login', {error: "Ensure password contains 1 number, and 1 uppercase and lowercase letter."});
+            res.status(422).render('pages/login', {error: "Ensure password contains 1 number, and 1 uppercase and lowercase letter."});
         } else {
             User.get(email, (err, user) => {
                 if (err) {
@@ -28,10 +28,11 @@ module.exports = function(app, User, Note, bcrypt) {
                 if (user) {
                     bcrypt.compare(password, user.password, (err, response) => {
                         if (err || !response) {
-                            res.render('pages/login', {error: "Login failed."});
+                            res.status(400).render('pages/login', {error: "Login failed."});
                         } else {
                             if (!user.verified) {
-                                res.render('pages/login', {error: `Verify your email! You can resend the verification email <a href=\"https://${req.get('host')}/resend?email=${user.email}\">here</a>.`});
+                                console.log(user);
+                                res.status(401).render('pages/login', {error: `Verify your email! You can resend the verification email <a href=\"https://${req.get('host')}/resend?email=${user.email}\">here</a>.`});
                             } else {
                                 console.log(`INFO: Succesful login by ${email}`);
                                 req.session.email = email;
@@ -40,7 +41,7 @@ module.exports = function(app, User, Note, bcrypt) {
                         }
                     });
                 } else {
-                    res.render('pages/login', {error: "Login failed."});
+                    res.status(400).render('pages/login', {error: "Login failed."});
                 }
             });
         }
@@ -49,6 +50,6 @@ module.exports = function(app, User, Note, bcrypt) {
     // logout request
     app.get('/logout', (req, res) => {
         delete req.session.email;
-        res.redirect('/');
+        return res.redirect('/');
     });
 }

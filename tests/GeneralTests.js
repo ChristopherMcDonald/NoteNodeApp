@@ -1,14 +1,16 @@
 var request = require('supertest');
-var sleep = require('thread-sleep');
 
 // allows self-signed cert
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 describe('loading express', () => {
     var server;
+    var session = require('supertest-session');
+    var testSession = null;
 
     beforeEach(() => {
         server = require('../server');
+        testSession = session(server);
     });
 
     afterEach(() => {
@@ -16,7 +18,7 @@ describe('loading express', () => {
     });
 
     after(() => {
-        server.MongoMemoryServer.stop();
+        server.Mongo.stop();
     });
 
     // GET /
@@ -26,7 +28,7 @@ describe('loading express', () => {
 
     // GET /note/fakeID
     it('redirects home', (done) => {
-        request(server).get('/note/someId').expect(401, done);
+        request(server).get('/note/someId').expect(302, done);
     });
 
     // GET /foo/bar
@@ -88,14 +90,14 @@ describe('loading express', () => {
         .send({confpassword: 'superStrong10'})
         .expect(200)
         .then(res => {
-            var path = server.MockMailClient.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+            var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
             request(server)
             .get(path)
             .expect(200, done);
         });
     });
 
-    it('/verify w/ bad guid', (done) => {
+    it('verify w/ bad guid', (done) => {
         request(server)
         .post('/signup')
         .send({email: 'fakeemail10@email.com'})
@@ -103,7 +105,7 @@ describe('loading express', () => {
         .send({confpassword: 'superStrong10'})
         .expect(200)
         .then(res => {
-            var path = server.MockMailClient.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+            var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
             path += 'badGuid';
             request(server)
             .get(path)
@@ -111,7 +113,7 @@ describe('loading express', () => {
         });
     });
 
-    it('/resend', (done) => {
+    it('resend', (done) => {
         request(server)
         .post('/signup')
         .send({email: 'fakeemail1@email.com'})
@@ -119,12 +121,12 @@ describe('loading express', () => {
         .send({confpassword: 'superStrong10'})
         .expect(200)
         .then(res => {
-            server.MockMailClient.actions.pop();
+            server.Mail.actions.pop();
             request(server)
             .get(`/resend?email=fakeemail1@email.com`)
             .expect(200)
             .then(res => {
-                var path = server.MockMailClient.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+                var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
                 request(server)
                 .get(path)
                 .expect(200, done);
@@ -135,21 +137,22 @@ describe('loading express', () => {
     it('/login', (done) => {
         request(server)
         .post('/signup')
-        .send({email: 'fake@email.com'})
+        .send({email: 'fake6543@email.com'})
         .send({password: 'superStrong10'})
         .send({confpassword: 'superStrong10'})
         .expect(200)
         .then(res => {
-            var path = server.MockMailClient.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+            var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
             request(server)
             .get(path)
             .expect(200)
             .then(res => {
                 request(server)
                 .post('/login')
-                .send({email: 'fake@email.com'})
+                .send({email: 'fake6543@email.com'})
                 .send({password: 'superStrong10'})
-                .expect(200, done);
+                .expect(302, done);
+                // TODO: check for redirection location
             });
         });
     });
@@ -163,17 +166,60 @@ describe('loading express', () => {
         .expect(200)
         .then(() => {
             // password reset api call
-            server.MockMailClient.actions.pop();
+            server.Mail.actions.pop();
             request(server)
             .post('/password')
             .send({email: 'fakeemail11@email.com'})
             .expect(200)
             .then(() => {
                 // read email, reset password
-                var path = server.MockMailClient.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+                var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
                 request(server)
-                .post(path)
+                .get(path)
                 .expect(200, done)
+            });
+        });
+    });
+
+    it('/password reset full', done => {
+        request(server)
+        .post('/signup')
+        .send({email: 'fakeemail20@email.com'})
+        .send({password: 'superStrong10'})
+        .send({confpassword: 'superStrong10'})
+        .expect(200)
+        .then(() => {
+            // password reset api call
+            var verifyPath = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+            request(server)
+            .post('/password')
+            .send({email: 'fakeemail20@email.com'})
+            .expect(200)
+            .then(() => {
+                // read email, reset password
+                var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+                testSession
+                .get(path)
+                .expect(200)
+                .then(() => {
+                    testSession
+                    .post('/passwordReset')
+                    .send({password: 'superStrong11'})
+                    .send({confpassword: 'superStrong11'})
+                    .expect(200)
+                    .then(() => {
+                        request(server)
+                        .get(verifyPath)
+                        .expect(200)
+                        .then(() => {
+                            request(server)
+                            .post('/login')
+                            .send({email: 'fakeemail20@email.com'})
+                            .send({password: 'superStrong11'})
+                            .expect(302, done);
+                        });
+                    });
+                });
             });
         });
     });
@@ -181,23 +227,25 @@ describe('loading express', () => {
     it('/password reset bad', done => {
         request(server)
         .post('/signup')
-        .send({email: 'fakeemail12@email.com'})
+        .send({email: 'fakeemail14423@email.com'})
         .send({password: 'superStrong10'})
         .send({confpassword: 'superStrong10'})
         .expect(200)
         .then(() => {
             // password reset api call
-            server.MockMailClient.actions.pop();
+            server.Mail.actions.pop();
             request(server)
             .post('/password')
-            .send({email: 'fakeemail12@email.com'})
+            .send({email: 'fakeemail14423@email.com'})
             .expect(200)
             .then(() => {
                 // read email, reset password
-                var path = server.MockMailClient.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+                var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+                path += 'badGuid';
+                console.log(path);
                 request(server)
-                .get(path + 'badGuid')
-                .expect(400, done)
+                .get(path)
+                .expect(302, done)
             });
         });
     });

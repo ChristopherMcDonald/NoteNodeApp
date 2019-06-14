@@ -81,6 +81,7 @@ var server = https.createServer({
     console.log(`App listening on port ${8080}`);
 });
 
-server.MockMailClient = sgMail;
-server.MongoMemoryServer = mongod;
+server.Mail = sgMail;
+server.Mongo = mongod;
+server.Models = Models;
 module.exports = server;

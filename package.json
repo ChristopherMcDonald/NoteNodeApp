@@ -14,6 +14,7 @@
     "mongoose": "^5.5.5",
     "sendgrid": "^5.2.3",
     "supertest": "^4.0.2",
+    "supertest-session": "^4.0.0",
     "thread-sleep": "^2.2.0",
     "uuid": "^3.3.2"
   },

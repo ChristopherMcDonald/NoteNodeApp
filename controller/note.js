@@ -5,7 +5,7 @@ module.exports = function(app, User, Note) {
         var email = req.session.email;
         if (email === undefined)
         {
-            res.redirect('/');
+            return res.redirect('/');
         }
         else
         {
@@ -15,7 +15,7 @@ module.exports = function(app, User, Note) {
                 }
 
                 if (!user) {
-                    res.redirect('/');
+                    return res.redirect('/');
                 }
 
                 res.render('pages/index', {user: user, note: req.params.id});
@@ -27,7 +27,7 @@ module.exports = function(app, User, Note) {
         var email = req.session.email;
         if (email === undefined)
         {
-            res.redirect('/');
+            return res.redirect('/');
         }
         else
         {
@@ -37,7 +37,7 @@ module.exports = function(app, User, Note) {
                 }
 
                 if (!user) {
-                    res.redirect('/');
+                    return res.redirect('/');
                 }
 
                 user.notes = user.notes.filter(n => n.id != req.params.id);
@@ -50,7 +50,7 @@ module.exports = function(app, User, Note) {
         var email = req.session.email;
         if (email === undefined)
         {
-            res.redirect('/');
+            return res.redirect('/');
         }
         else
         {
@@ -60,7 +60,7 @@ module.exports = function(app, User, Note) {
                 }
 
                 if (user == null) {
-                    res.redirect('/');
+                    return res.redirect('/');
                 }
 
                 if (req.body.id) {
@@ -88,7 +88,7 @@ module.exports = function(app, User, Note) {
         var email = req.session.email;
         if (email === undefined)
         {
-            res.redirect('/');
+            return res.redirect('/');
         }
         else
         {
@@ -98,7 +98,7 @@ module.exports = function(app, User, Note) {
                 }
 
                 if (!user) {
-                    res.redirect('/');
+                    return res.redirect('/');
                 }
 
                 user.notes.filter(n => n.id == req.params.id)[0].pinned = !user.notes.filter(n => n.id == req.params.id)[0].pinned;

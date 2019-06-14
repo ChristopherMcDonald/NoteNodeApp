@@ -74,7 +74,7 @@ module.exports = function(app, User, sgMail, bcrypt, uuidv1){
                 }
 
                 if (!user) {
-                    res.redirect('/');
+                    return res.redirect('/');
                 }
 
                 bcrypt.hash(password, 10, (err, hash) => {

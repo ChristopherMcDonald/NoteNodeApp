@@ -36,7 +36,7 @@ module.exports = function(app, User, bcrypt) {
                             } else {
                                 console.log(`INFO: Succesful login by ${email}`);
                                 req.session.email = email;
-                                res.redirect("/");
+                                return res.redirect("/");
                             }
                         }
                     });

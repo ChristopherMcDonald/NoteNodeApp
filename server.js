@@ -51,7 +51,6 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: false, httpOnly: true }
 }));
-
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 

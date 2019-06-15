@@ -76,7 +76,6 @@ module.exports = function(app, User, Note, sgMail, bcrypt) {
             if (err) {
                 throw err;
             }
-
             if (!user) {
                 res.render('pages/login', {error: "That link wasn't quite correct..."});
             }

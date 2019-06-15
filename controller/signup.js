@@ -39,20 +39,31 @@ module.exports = function(app, User, Note, sgMail, bcrypt) {
         if (!validateEmail(email)) {
             res.status(422).render('pages/signup', {error: "Email is not in correct format, check again or choose another."});
         } else if(!validatePasswords(password, confpassword)) {
-            res.status(422).render('pages/signup', {error: "Ensure passwords are equal and it contains 1 number, and 1 uppercase and lowercase letter."});
+            res.status(422).render('pages/signup', {error: "Passwords must be equal, at least 6 characters long and contain an uppercase letter, lowercase letter and a number."});
         } else {
             // save user
-            // TODO check for user already in DB
-            bcrypt.hash(password, 10, (err, hash) => {
+
+            User.get(email, (err, user) => {
                 if (err) {
                     throw err;
                 }
 
-                User.create(email, hash, (user) => {
-                    EmailHelper.sendSignupEmail(sgMail, user, req.get('host'));
-                    res.render('pages/login', {success: "Signed up successfully. Please login."});
-                    console.log(`INFO: Succesful signup by ${email}`);
-                });
+                if (user) {
+                    return res.render('pages/login', {success: "Woops! I think you have already signed up. Check your email for verification and login."});
+                }
+                else {
+                    bcrypt.hash(password, 10, (err, hash) => {
+                        if (err) {
+                            throw err;
+                        }
+
+                        User.create(email, hash, (user) => {
+                            EmailHelper.sendSignupEmail(sgMail, user, req.get('host'));
+                            res.render('pages/login', {success: "Signed up successfully, we sent you an email! Please verify before logging in."});
+                            console.log(`INFO: Succesful signup by ${email}`);
+                        });
+                    });
+                }
             });
         }
     });

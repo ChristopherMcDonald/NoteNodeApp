@@ -31,7 +31,7 @@ var fs = require('fs');
 var helmet = require('helmet');
 
 // Password and security hashing stuff
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const uuidv1 = require('uuid/v1');
 
 // email

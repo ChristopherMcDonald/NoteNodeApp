@@ -27,6 +27,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var https = require('https');
+var http = require('http');
 var fs = require('fs');
 var helmet = require('helmet');
 
@@ -75,12 +76,14 @@ require('./controller/note')(app, User, Note);
 require('./controller/error')(app);
 
 var port = process.env.PORT || (config[process.argv[2]] && config[process.argv[2]].port) ? config[process.argv[2]].port : 8080;
-var server = https.createServer({
-  key: fs.readFileSync('server.key'),
-  cert: fs.readFileSync('server.cert')
-}, app).listen(port, () => {
-    console.log(`App listening on port ${port}`);
-});
+// var server = https.createServer({
+//   key: fs.readFileSync('server.key'),
+//   cert: fs.readFileSync('server.cert')
+// }, app).listen(port, () => {
+//     console.log(`App listening on port ${port}`);
+// });
+
+var server = http.createServer(app).listen(port, () => { console.log(`App listening on port ${port}`); });
 
 server.Mail = sgMail;
 server.Mongo = mongod;

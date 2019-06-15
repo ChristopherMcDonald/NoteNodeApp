@@ -74,11 +74,12 @@ require('./controller/note')(app, User, Note);
 // error catching routes
 require('./controller/error')(app);
 
+var port = process.env.PORT || (config[process.argv[2]] && config[process.argv[2]].port) ? config[process.argv[2]].port : 8080;
 var server = https.createServer({
   key: fs.readFileSync('server.key'),
   cert: fs.readFileSync('server.cert')
-}, app).listen( (config[process.argv[2]] && config[process.argv[2]].port) ? config[process.argv[2]].port : 8080, () => {
-    console.log(`App listening on port ${8080}`);
+}, app).listen(port, () => {
+    console.log(`App listening on port ${port}`);
 });
 
 server.Mail = sgMail;

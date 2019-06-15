@@ -7,13 +7,9 @@ The intended use of this is to be a reference / base for future node projects.
 ## Important Notes
 
 I am currently working on the following features:
-- Google / Facebook integration (signup and sharing)
-- Markdown Formatting
-- Live Deployment
+- Google / Facebook integration (signup and sharing cards)
+- Markdown Formatting on Notes
 - JSON web tokens for multi-server support
-- Unit Tests
-- Data Access Layering
-- Resend verification email
 
 ## Versions
 
@@ -26,7 +22,7 @@ I am currently working on the following features:
 ## Prerequisites
 
 You should have these items installed:
-- Node (v11.15.0)
+- Node (v10.14.\*)
 - MongoDB
 
 ## Running locally
@@ -41,7 +37,20 @@ node server.js dev
 
 ## Deployment
 
-Coming soon!
+Currently live as a closed beta, contact me for URL!
+
+## Testing
+
+Run the tests as follows...
+
+```
+git pull https://github.com/ChristopherMcDonald/NoteNodeApp.git
+cd NodeNoteApp
+npm install
+npm install -g mocha
+mocha -R specs tests/GeneralTests.js
+mocha -R specs tests/NotesTests.js
+```
 
 ## Built With
 
@@ -58,6 +67,11 @@ Coming soon!
 ## Authors
 
 * **Christopher McDonald** - *Initial work* - [Personal Site](https://christophermcdonald.me)
+
+## Acknowledgements
+
+* **Eric Le Fort** - *Early Adopter, Found Bugs, Recommended Changes*
+* **Melissa Robins** - *Early Adopter*
 
 ## License
 

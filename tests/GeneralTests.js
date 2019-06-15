@@ -190,14 +190,14 @@ describe('loading express', () => {
         .expect(200)
         .then(() => {
             // password reset api call
-            var verifyPath = server.Mail.actions.pop().replace(/http:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+            var verifyPath = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
             request(server)
             .post('/password')
             .send({email: 'fakeemail20@email.com'})
             .expect(200)
             .then(() => {
                 // read email, reset password
-                var path = server.Mail.actions.pop().replace(/http:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+                var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
                 testSession
                 .get(path)
                 .expect(200)

@@ -49,7 +49,7 @@ app.use(session({
     secret: (config[process.argv[2]] && config[process.argv[2]].sessionSecret) ? config[process.argv[2]].sessionSecret : "secret",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true, httpOnly: true }
+    cookie: { secure: false, httpOnly: true }
 }));
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -76,12 +76,6 @@ require('./controller/note')(app, User, Note);
 require('./controller/error')(app);
 
 var port = process.env.PORT || (config[process.argv[2]] && config[process.argv[2]].port) ? config[process.argv[2]].port : 8080;
-// var server = https.createServer({
-//   key: fs.readFileSync('server.key'),
-//   cert: fs.readFileSync('server.cert')
-// }, app).listen(port, () => {
-//     console.log(`App listening on port ${port}`);
-// });
 
 var server = http.createServer(app).listen(port, () => { console.log(`App listening on port ${port}`); });
 

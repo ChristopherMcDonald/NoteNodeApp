@@ -12,7 +12,7 @@ describe('loading express', () => {
         var sleep = require('thread-sleep');
         server = require('../server');
         testSession = session(server);
-        sleep(3000);
+        sleep(1000);
     });
 
     afterEach(() => {

@@ -20,7 +20,7 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "test": "mocha tests/GeneralTests.js --exit --timeout 10000",
+    "test": "mocha tests/GeneralTests.js --exit --timeout 15000",
     "start": "node server prod"
   },
   "devDependencies": {

@@ -20,10 +20,11 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "test": "snyk test",
+    "test": "mocha tests/GeneralTests.js --exit --reporter mocha-junit-reporter --reporter-options mochaFile=./tests/out/general.xml; mocha tests/NotesTests.js --exit --reporter mocha-junit-reporter --reporter-options mochaFile=./tests/out/notes.xml;",
     "start": "node server prod"
   },
   "devDependencies": {
+    "mocha-junit-reporter": "^1.23.0",
     "snyk": "^1.161.1"
   }
 }

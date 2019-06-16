@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="1.342" tests="16" failures="0">
+  <testsuite name="Root Suite" timestamp="2019-06-16T00:09:27" tests="0" failures="0" time="0">
+  </testsuite>
+  <testsuite name="loading express" timestamp="2019-06-16T00:09:27" tests="16" file="/Users/christophermcdonald/Google Drive/Code/NodeNoteApp/tests/GeneralTests.js" failures="0" time="1.342">
+    <testcase name="loading express responds to /" time="0.075" classname="responds to /">
+    </testcase>
+    <testcase name="loading express redirects home" time="0.007" classname="redirects home">
+    </testcase>
+    <testcase name="loading express 404 everything else" time="0.005" classname="404 everything else">
+    </testcase>
+    <testcase name="loading express responds to /login" time="0.004" classname="responds to /login">
+    </testcase>
+    <testcase name="loading express responds to /signup" time="0.005" classname="responds to /signup">
+    </testcase>
+    <testcase name="loading express /signup" time="0.198" classname="/signup">
+    </testcase>
+    <testcase name="loading express /signup w/ bad passwords" time="0.004" classname="/signup w/ bad passwords">
+    </testcase>
+    <testcase name="loading express /signup w/ weak password" time="0.003" classname="/signup w/ weak password">
+    </testcase>
+    <testcase name="loading express /signup w/ bad email" time="0.003" classname="/signup w/ bad email">
+    </testcase>
+    <testcase name="loading express /verify" time="0.115" classname="/verify">
+    </testcase>
+    <testcase name="loading express verify w/ bad guid" time="0.104" classname="verify w/ bad guid">
+    </testcase>
+    <testcase name="loading express resend" time="0.108" classname="resend">
+    </testcase>
+    <testcase name="loading express /login" time="0.197" classname="/login">
+    </testcase>
+    <testcase name="loading express /password reset" time="0.106" classname="/password reset">
+    </testcase>
+    <testcase name="loading express /password reset full" time="0.307" classname="/password reset full">
+    </testcase>
+    <testcase name="loading express /password reset bad" time="0.101" classname="/password reset bad">
+    </testcase>
+  </testsuite>
+</testsuites>

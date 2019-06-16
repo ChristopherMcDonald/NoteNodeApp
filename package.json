@@ -26,7 +26,5 @@
     ],
     "start": "node server prod"
   },
-  "devDependencies": {
-    "mocha-junit-reporter": "^1.23.0"
-  }
+  "devDependencies": {}
 }

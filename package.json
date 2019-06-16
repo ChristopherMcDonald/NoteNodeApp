@@ -19,10 +19,11 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "test": "mocha tests/GeneralTests.js --exit --timeout 20000; mocha tests/NotesTests.js --exit",
+    "test": "mocha tests/GeneralTests.js --exit --timeout 20000",
     "//": [
       "long timeout is due to installing the in memory mongo DB server, looking into a workaround",
-      "TODO: reduce timeout"
+      "TODO: reduce timeout",
+      "TODO: run both test files"
     ],
     "start": "node server prod"
   },

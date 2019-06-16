@@ -22,7 +22,7 @@
     "test": "mocha tests/ --exit --timeout 20000",
     "//": [
       "long timeout is due to installing the in memory mongo DB server, looking into a workaround",
-      "TODO: reduce timeout",
+      "TODO: reduce timeout"
     ],
     "start": "node server prod"
   },

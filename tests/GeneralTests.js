@@ -9,10 +9,8 @@ describe('loading express', () => {
     var testSession = null;
 
     beforeEach(() => {
-        var sleep = require('thread-sleep');
         server = require('../server');
         testSession = session(server);
-        sleep(1000);
     });
 
     afterEach(() => {

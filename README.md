@@ -4,12 +4,16 @@ The simplest node app I could make which demonstrates CRUD functions, logging, u
 
 The intended use of this is to be a reference / base for future node projects.
 
+###### Master Built Status
+![Master build status](https://dev.azure.com/ChristopherMcDonaldPersonal/MyFirstProject/_apis/build/status/nodenoteapp%20-%20CI?branchName=master)
+
 ## Important Notes
 
 I am currently working on the following features:
 - Google / Facebook integration (signup and sharing cards)
 - Markdown Formatting on Notes
 - JSON web tokens for multi-server support
+- More testing
 
 ## Versions
 
@@ -18,6 +22,7 @@ I am currently working on the following features:
 - *v1.0.2*: Added password reset functionality
 - *v1.0.3*: Added pinning notes
 - *v1.0.4*: Added text cleanup to ensure no JS could be run
+- *v1.1.0*: Production ready (closed beta)
 
 ## Prerequisites
 
@@ -48,8 +53,7 @@ git pull https://github.com/ChristopherMcDonald/NoteNodeApp.git
 cd NodeNoteApp
 npm install
 npm install -g mocha
-mocha -R specs tests/GeneralTests.js
-mocha -R specs tests/NotesTests.js
+npm test
 ```
 
 ## Built With

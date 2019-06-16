@@ -1,21 +1,10 @@
 var request = require('supertest');
 
-// allows self-signed cert
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
 describe('loading express', () => {
     var server;
 
-    beforeEach(() => {
+    before(() => {
         server = require('../server');
-    });
-
-    afterEach(() => {
-        server.close();
-    });
-
-    after(() => {
-        server.Mongo.stop();
     });
 
     it('POST /note', (done) => {

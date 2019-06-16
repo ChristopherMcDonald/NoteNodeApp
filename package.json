@@ -20,7 +20,7 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "test": "mocha tests/GeneralTests.js --exit --reporter mocha-junit-reporter --reporter-options mochaFile=./tests/out/general.xml; mocha tests/NotesTests.js --exit --reporter mocha-junit-reporter --reporter-options mochaFile=./tests/out/notes.xml;",
+    "test": "mocha tests/ --exit --reporter mocha-junit-reporter --reporter-options mochaFile=./tests/out/general.xml",
     "start": "node server prod"
   },
   "devDependencies": {

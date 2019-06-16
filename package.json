@@ -16,14 +16,15 @@
     "sendgrid": "^5.2.3",
     "supertest": "^4.0.2",
     "supertest-session": "^4.0.0",
-    "thread-sleep": "^2.2.0",
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "test": "snyk test",
+    "test": "mocha tests/ --exit --timeout 30000",
+    "//": [
+      "long timeout is due to installing the in memory mongo DB server, looking into a workaround",
+      "TODO: reduce the timeouts"
+    ],
     "start": "node server prod"
   },
-  "devDependencies": {
-    "snyk": "^1.161.1"
-  }
+  "devDependencies": {}
 }

@@ -1,8 +1,5 @@
 var request = require('supertest');
 
-// allows self-signed cert
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
 describe('loading express', () => {
     var server;
     var session = require('supertest-session');
@@ -11,14 +8,6 @@ describe('loading express', () => {
     beforeEach(() => {
         server = require('../server');
         testSession = session(server);
-    });
-
-    afterEach(() => {
-        server.close();
-    });
-
-    after(() => {
-        server.Mongo.stop();
     });
 
     // GET /

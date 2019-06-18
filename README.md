@@ -12,7 +12,6 @@ The intended use of this is to be a reference / base for future node projects.
 I am currently working on the following features:
 - Google / Facebook integration (signup and sharing cards)
 - Markdown Formatting on Notes
-- JSON web tokens for multi-server support
 - More testing
 
 ## Versions

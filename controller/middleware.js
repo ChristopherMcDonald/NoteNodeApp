@@ -13,4 +13,10 @@ module.exports = (app) => {
             console.log(`REQ: ${req.method} ${res.statusCode} ${req.originalUrl} ${ms} by ${email}`);
         }
     });
+
+    // catch all function which updates the cookie every minute of activity
+    app.use(function (req, res, next) {
+        req.session.nowInMinutes = Math.floor(Date.now() / 60e3);
+        next();
+    });
 };

@@ -6,6 +6,7 @@
     "bcrypt": "^3.0.6",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "cookie-session": "^1.3.3",
     "ejs": "2.6.1",
     "express": "4.16.4",
     "express-session": "^1.16.1",
@@ -24,7 +25,8 @@
       "long timeout is due to installing the in memory mongo DB server, looking into a workaround",
       "TODO: reduce the timeouts"
     ],
-    "start": "node server prod"
+    "start": "node server prod",
+    "dev": "node server dev"
   },
   "devDependencies": {}
 }

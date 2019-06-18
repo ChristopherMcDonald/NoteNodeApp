@@ -25,7 +25,7 @@ var Note = Models.Note;
 // API server stuff
 var express = require('express');
 var bodyParser = require('body-parser');
-var session = require('express-session');
+var cookieSession = require('cookie-session')
 var https = require('https');
 var http = require('http');
 var fs = require('fs');
@@ -45,11 +45,12 @@ if (config[process.argv[2]] && config[process.argv[2]].email) {
 
 var app = express();
 app.set('trust proxy', 1);
-app.use(session({
-    secret: (config[process.argv[2]] && config[process.argv[2]].sessionSecret) ? config[process.argv[2]].sessionSecret : "secret",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false, httpOnly: true }
+app.use(cookieSession({
+  name: 'session',
+  secret: (config[process.argv[2]] && config[process.argv[2]].sessionSecret) ? config[process.argv[2]].sessionSecret : "secret",
+
+  // Cookie Options
+  maxAge: 6 * 60 * 60 * 1000 // 6 hours
 }));
 
 app.use(bodyParser.json()); // support json encoded bodies

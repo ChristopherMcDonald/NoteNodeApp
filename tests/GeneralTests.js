@@ -79,7 +79,7 @@ describe('loading express', () => {
         .send({confpassword: 'superStrong10'})
         .expect(200)
         .then(res => {
-            var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+            var path = server.Mail.actions.pop().replace(/(http|https):\/\/127\.0\.0\.1:[0-9]{1,}/, '');
             request(server)
             .get(path)
             .expect(200, done);
@@ -94,7 +94,7 @@ describe('loading express', () => {
         .send({confpassword: 'superStrong10'})
         .expect(200)
         .then(res => {
-            var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+            var path = server.Mail.actions.pop().replace(/(http|https):\/\/127\.0\.0\.1:[0-9]{1,}/, '');
             path += 'badGuid';
             request(server)
             .get(path)
@@ -115,7 +115,7 @@ describe('loading express', () => {
             .get(`/resend?email=fakeemail1@email.com`)
             .expect(200)
             .then(res => {
-                var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+                var path = server.Mail.actions.pop().replace(/(http|https):\/\/127\.0\.0\.1:[0-9]{1,}/, '');
                 request(server)
                 .get(path)
                 .expect(200, done);
@@ -131,7 +131,7 @@ describe('loading express', () => {
         .send({confpassword: 'superStrong10'})
         .expect(200)
         .then(res => {
-            var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+            var path = server.Mail.actions.pop().replace(/(http|https):\/\/127\.0\.0\.1:[0-9]{1,}/, '');
             request(server)
             .get(path)
             .expect(200)
@@ -162,7 +162,7 @@ describe('loading express', () => {
             .expect(200)
             .then(() => {
                 // read email, reset password
-                var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+                var path = server.Mail.actions.pop().replace(/(http|https):\/\/127\.0\.0\.1:[0-9]{1,}/, '');
                 request(server)
                 .get(path)
                 .expect(200, done)
@@ -179,14 +179,14 @@ describe('loading express', () => {
         .expect(200)
         .then(() => {
             // password reset api call
-            var verifyPath = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+            var verifyPath = server.Mail.actions.pop().replace(/(http|https):\/\/127\.0\.0\.1:[0-9]{1,}/, '');
             request(server)
             .post('/password')
             .send({email: 'fakeemail20@email.com'})
             .expect(200)
             .then(() => {
                 // read email, reset password
-                var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+                var path = server.Mail.actions.pop().replace(/(http|https):\/\/127\.0\.0\.1:[0-9]{1,}/, '');
                 testSession
                 .get(path)
                 .expect(200)
@@ -229,7 +229,7 @@ describe('loading express', () => {
             .expect(200)
             .then(() => {
                 // read email, reset password
-                var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+                var path = server.Mail.actions.pop().replace(/(http|https):\/\/127\.0\.0\.1:[0-9]{1,}/, '');
                 path += 'badGuid';
                 console.log(path);
                 request(server)

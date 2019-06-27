@@ -15,7 +15,7 @@ describe('loading express', () => {
         .send({confpassword: 'superStrong10'})
         .expect(200)
         .then(res => {
-            var path = server.Mail.actions.pop().replace(/https:\/\/127\.0\.0\.1:[0-9]{1,}/, '');
+            var path = server.Mail.actions.pop().replace(/(http|https):\/\/127\.0\.0\.1:[0-9]{1,}/, '');
             request(server)
             .get(path)
             .expect(200)

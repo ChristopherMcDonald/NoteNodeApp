@@ -25,7 +25,7 @@ module.exports = function(app, User, Note, sgMail, bcrypt) {
                 res.render('pages/login', {error: "That link wasn't quite correct..."});
             }
 
-            EmailHelper.sendSignupEmail(sgMail, user, req.get('host'));
+            EmailHelper.sendSignupEmail(sgMail, user, req.get('host'), req.secure);
             res.render('pages/login', {success: "The verification email has been resent."});
         });
     });
@@ -58,7 +58,7 @@ module.exports = function(app, User, Note, sgMail, bcrypt) {
                         }
 
                         User.create(email, hash, (user) => {
-                            EmailHelper.sendSignupEmail(sgMail, user, req.get('host'));
+                            EmailHelper.sendSignupEmail(sgMail, user, req.get('host'), req.secure);
                             res.render('pages/login', {success: "Signed up successfully, we sent you an email! Please verify before logging in."});
                             console.log(`INFO: Succesful signup by ${email}`);
                         });
@@ -76,7 +76,7 @@ module.exports = function(app, User, Note, sgMail, bcrypt) {
             if (err) {
                 throw err;
             }
-            
+
             if (!user) {
                 res.render('pages/login', {error: "That link wasn't quite correct..."});
             }

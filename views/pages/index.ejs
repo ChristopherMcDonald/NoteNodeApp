@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <%- include('../partials/head', {page: 'Home', css: 'index'}) %>
 </head>
-<header>
-</header>
+
 <body>
     <div class="d-flex" id="wrapper">
 
@@ -13,28 +13,43 @@
             <div class="sidebar-heading">NotesApp</div>
             <div class="list-group list-group-flush">
                 <% for(var i=0; i < user.notes.length; i++) { %>
-                    <% if (user.notes[i].id == note) { %>
-                        <a href="#" class="list-group-item list-group-item-action bg-info">
-                            <% if (user.notes[i].pinned) { %>
-                                <i class="fas fa-thumbtack"></i>
-                            <% } %>
-                            <%= user.notes[i].title%>
-                        </a>
-                    <% } else { %>
-                          <a href="/note/<%= user.notes[i].id %>" class="list-group-item list-group-item-action bg-light">
-                              <% if (user.notes[i].pinned) { %>
-                                  <i class="fas fa-thumbtack"></i>
-                              <% } %>
-                              <%= user.notes[i].title%>
-                          </a>
+                <% if (user.notes[i].id == note) { %>
+                <a href="#" class="list-group-item list-group-item-action bg-info">
+                    <% if (user.notes[i].pinned) { %>
+                    <i class="fas fa-thumbtack"></i>
                     <% } %>
+                    <%= user.notes[i].title%>
+                </a>
+                <% } else { %>
+                <a href="/note/<%= user.notes[i].id %>" class="list-group-item list-group-item-action bg-light">
+                    <% if (user.notes[i].pinned) { %>
+                    <i class="fas fa-thumbtack"></i>
+                    <% } %>
+                    <%= user.notes[i].title%>
+                </a>
+                <% } %>
                 <% } %>
                 <form action="/note" method="post">
-                    <input class="btn btn-info ml-1 mt-1" type="submit" value="New Note"/>
+                    <input class="btn btn-info ml-1 mt-1" type="submit" value="New Note" />
                 </form>
             </div>
         </div>
         <!-- /#sidebar-wrapper -->
+
+        <% if (locals.error) { %>
+        <div class="alert alert-warning pop-up">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <h4>Whoops!</h4>
+            <%- locals.error -%>
+        </div>
+        <% } %>
+        <% if (locals.success) { %>
+        <div class="alert alert-success pop-up">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <h4>Success!</h4>
+            <%= locals.success %>
+        </div>
+        <% } %>
 
         <!-- Page Content -->
         <div id="page-content-wrapper">
@@ -44,8 +59,14 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link text-danger" href="/logout">Logout</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="nav-link" href="#" data-toggle="modal" data-target="#exampleModal">Change Password</a>
+                                <a class="nav-link" href="/logout">Logout</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="nav-link text-danger" href="/delete" onclick="return confirm('Are you sure you want to delete your account? This cannot be undone.')">Delete Account</a>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -59,14 +80,14 @@
                 </form>
                 <input type="submit" form="note" class="btn btn-primary mt-2" id="save" disabled value="Save" />
                 <% if (user.notes.length > 1) { %>
-                    <button type="button" class="btn btn-danger mt-2" onclick="return deleteNote('<%= user.notes.filter(n => n.id == note)[0].id %>');"><i class="fas fa-trash-alt"></i></button>
+                <button type="button" class="btn btn-danger mt-2" onclick="return deleteNote('<%= user.notes.filter(n => n.id == note)[0].id %>');"><i class="fas fa-trash-alt"></i></button>
                 <% } %>
                 <form class="d-inline-block" method="post" action="/note/<%= user.notes.filter(n => n.id == note)[0].id %>/pin">
                     <button type="submit" class="btn btn-info mt-2">
                         <% if (user.notes.filter(n => n.id == note)[0].pinned) { %>
-                            <i class="fas fa-thumbtack" style="color: black;"></i>
+                        <i class="fas fa-thumbtack" style="color: black;"></i>
                         <% } else { %>
-                            <i class="fas fa-thumbtack" style="color: white;"></i>
+                        <i class="fas fa-thumbtack" style="color: white;"></i>
                         <% } %>
                     </button>
                 </form>
@@ -77,37 +98,68 @@
     </div>
     <!-- /#wrapper -->
 
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="setPassword" method="post" id="setPassword">
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="Password!" name="password">
+                        </div>
+                        <div class="form-group">
+                            <label for="confpassword">Confirm Password</label>
+                            <input type="password" class="form-control" id="confpassword" placeholder="Password!" name="confpassword">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="document.getElementById('setPassword').submit();">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap core JavaScript -->
     <script src="/vendor/jquery/jquery.min.js"></script>
     <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Menu Toggle Script -->
     <script>
-    $("#menu-toggle").click((e) => {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-
-    $("#main-text").change((e) => {
-        e.preventDefault();
-        $("#save").removeAttr("disabled");
-    });
-
-    $("#main-title").change((e) => {
-        e.preventDefault();
-        $("#save").removeAttr("disabled");
-    });
-
-    deleteNote = (id) => {
-        $.ajax({
-            url: `/note/${id}`,
-            type: 'DELETE',
-            success: (result) => {
-                window.location.href = "/";
-                return false;
-            }
+        $("#menu-toggle").click((e) => {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
         });
-    }
+
+        $("#main-text").change((e) => {
+            e.preventDefault();
+            $("#save").removeAttr("disabled");
+        });
+
+        $("#main-title").change((e) => {
+            e.preventDefault();
+            $("#save").removeAttr("disabled");
+        });
+
+        deleteNote = (id) => {
+            $.ajax({
+                url: `/note/${id}`,
+                type: 'DELETE',
+                success: (result) => {
+                    window.location.href = "/";
+                    return false;
+                }
+            });
+        }
     </script>
 </body>
+
 </html>

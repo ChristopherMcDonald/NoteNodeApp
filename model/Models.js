@@ -55,6 +55,16 @@ userSchema.statics.get = (email, func) => {
     });
 };
 
+userSchema.statics.delete = (email, func) => {
+    var UserModel = mongoose.model('User', userSchema);
+    UserModel.deleteOne({email: email}, (err) => {
+        if (err) {
+            throw err;
+        }
+        func(err);
+    });
+}
+
 noteSchema.statics.create = (title, content) => {
     var NoteModel = mongoose.model('Note', noteSchema);
     return new NoteModel({title: title, content: content})

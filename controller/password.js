@@ -18,15 +18,15 @@ module.exports = function(app, User, sgMail, bcrypt, uuidv1){
 
             if (!user) {
                 // render
-                res.render('pages/login', { success: "If this user exists, an email has been set to the email provided." });
+                res.render('pages/login', { success: "An email has been set to account to reset your password." });
             } else {
                 console.log(`INFO: Succesful password reset by ${email}, user: ${user.email}`);
                 user.tempGuid = uuidv1();
 
-                EmailHelper.sendPasswordResetEmail(sgMail, user, req.get('host'));
+                EmailHelper.sendPasswordResetEmail(sgMail, user, req.get('host'), req.secure);
 
                 // return the same message as if user was not found, important for security
-                user.save().then(() => res.render('pages/login', {success: "If this user exists, an email has been set to the email provided."}));
+                user.save().then(() => res.render('pages/login', {success: "An email has been set to this account to reset your password."}));
             }
         });
     });
@@ -54,6 +54,39 @@ module.exports = function(app, User, sgMail, bcrypt, uuidv1){
             req.session.tempEmail = email;
 
             res.render('pages/passwordReset');
+        });
+    });
+
+    app.post('/setPassword', (req, res) => {
+
+        // this is only run when user is logged in
+        var email = req.session.email;
+        var password = req.body.password;
+        var confpassword = req.body.confpassword;
+
+        User.get(email, (err, user) => {
+            if (err) {
+                throw err;
+            }
+
+            if (!user) {
+                return res.redirect('/');
+            }
+
+            if (!validatePasswords(password, confpassword)) {
+                res.render('pages/index', {user: user, note: user.notes[0].id, error: "Ensure passwords are equal and it contains 1 number, and 1 uppercase and lowercase letter."});
+            }
+
+            bcrypt.hash(password, 10, (err, hash) => {
+                if (err) {
+                    throw err;
+                }
+
+                user.password = hash;
+
+                user.save().then(() => res.render('pages/index', {user: user, note: user.notes[0].id, success: "Password reset was successful."}));
+                console.log(`INFO: Successful password reset by ${email}`);
+            });
         });
     });
 

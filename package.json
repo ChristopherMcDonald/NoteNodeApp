@@ -13,7 +13,7 @@
     "helmet": "^3.17.0",
     "mocha": "^6.1.4",
     "mongodb-memory-server": "^5.1.2",
-    "mongoose": "^5.5.5",
+    "mongoose": "^5.7.5",
     "sendgrid": "^5.2.3",
     "supertest": "^4.0.2",
     "supertest-session": "^4.0.0",

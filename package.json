@@ -11,7 +11,7 @@
     "express": "4.16.4",
     "express-session": "^1.16.1",
     "helmet": "^3.17.0",
-    "mocha": "^6.1.4",
+    "mocha": "^10.2.0",
     "mongodb-memory-server": "^5.1.2",
     "mongoose": "^5.5.5",
     "sendgrid": "^5.2.3",
